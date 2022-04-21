@@ -9,3 +9,6 @@ router
   .route('/')
   .get(getAllThoughts)
   .post(createThought);
+
+
+  module.exports = router;
