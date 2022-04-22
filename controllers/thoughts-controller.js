@@ -32,7 +32,7 @@ const thoughtsController = {
         Thoughts.create(body)
           .then(({ _id }) => {
             return Users.findOneAndUpdate(
-              { userId: params.usersId },
+              { _id: params.usersId },
               { $push: { thoughts: _id } },
               { new: true }
             );
