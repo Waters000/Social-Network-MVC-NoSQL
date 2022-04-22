@@ -1,5 +1,6 @@
 const req = require('express/lib/request');
-const { User, Thoughts } = require('../models');
+const res = require('express/lib/response');
+const { Users, Thoughts } = require('../models');
 
 
 const thoughtsController = {
@@ -25,15 +26,30 @@ const thoughtsController = {
   },
 
 
-      // createThought
-  createThought({ body }, res) {
-    Thoughts.create(body)
-      .then(dbThoughtsData => res.json(dbThoughtsData))
-      .catch(err => res.json(err));
-  },
+      // addThought to user
+      addThought({ params, body }, res) {
+        console.log(body);
+        Thoughts.create(body)
+          .then(({ _id }) => {
+            return Users.findOneAndUpdate(
+              { userId: params.usersId },
+              { $push: { thoughts: _id } },
+              { new: true }
+            );
+          })
+          .then(dbUserData => {
+            if (!dbUserData) {
+              res.status(404).json({ message: 'No User found with this id!' });
+              return;
+            }
+            res.json(dbUserData);
+          })
+          .catch(err => res.json(err));
+      },
 
 // update Thought by id
 updateThought({ params, body }, res) {
+    console.log(body)
     Thoughts.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
       .then(dbThoughtsData => {
         if (!dbThoughtsData) {
