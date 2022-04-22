@@ -26,7 +26,7 @@ router
 
 // api/users/:id/friends
 router
-    .route('/:id/friends')
+    .route('/:userId/friends/:friendsId')
     .post(updateUserAddFriend)
 
 module.exports = router;

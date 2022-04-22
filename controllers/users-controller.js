@@ -34,6 +34,8 @@ const usersController = {
       .catch((err) => res.json(err));
   },
 
+
+
   // update User by id  path api/users/:id
   updateUser({ params, body }, res) {
     Users.findOneAndUpdate({ _id: params.id }, body, {
@@ -58,25 +60,24 @@ const usersController = {
   },
 
   // update User by id
-  updateUserAddFriend({ params, body }, res) {
+  updateUserAddFriend({ params }, res) {
     Users.findOneAndUpdate(
-      { _id: params.id },
-      body,
-      { new: true, runValidators: true },
+      { _id: params.id },      
       {
         $push: {
-          friends: req.params.friendId,
+          friends: params.friendId,
         },
       },
       { new: true }
     )
-
+    .populate ({path: 'friends', select: ('-__v')})
+    .select('-__v')
       .then((dbUserData) => {
         if (!dbUserData) {
           res.status(404).json({ message: "No User found with this id!" });
           return;
         }
-        res.json(dbPizzaData);
+        res.json(dbUserData);
       })
       .catch((err) => res.json(err));
   },

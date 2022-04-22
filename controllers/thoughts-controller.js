@@ -47,6 +47,11 @@ const thoughtsController = {
           .catch(err => res.json(err));
       },
 
+
+
+
+
+      
 // update Thought by id
 updateThought({ params, body }, res) {
     console.log(body)
@@ -71,7 +76,7 @@ updateThought({ params, body }, res) {
   /// create a reaction to thought
   // path api/thoughts/:id/reactions
 
-     // createThought
+     // createReactions
      createReactions({ params, body }, res) {
         Thoughts.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
             ({
