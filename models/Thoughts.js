@@ -3,7 +3,7 @@ const dateFormat = require("../utils/dateFormat");
 
 
 /// reactionSchema first because Thought Schema calls it.
-const reactionSchema = new Schema(
+const ReactionSchema = new Schema(
     {
       reactionId: {
         type: Schema.Types.ObjectId,
@@ -21,7 +21,7 @@ const reactionSchema = new Schema(
       createdAt: {
         type: Date,
         default: Date.now,
-        get: (createdAtVal) => dateFormat(createdAtVal),
+       // get: createdAtVal => dateFormat(createdAtVal),
       },
     },
     {
@@ -34,25 +34,25 @@ const reactionSchema = new Schema(
 
 
 
-const thoughtSchema = new Schema(
+const ThoughtSchema = new Schema(
   {
     thoughtText: {
       type: String,
       required: true,
-      min: [1, "Too few characters in Thought Text"],
-      max: [280, "Too many characters in Thought Text"],
+      minlength: [1, "Too few characters in Thought Text"],
+      maxlength: [280, "Too many characters in Thought Text"],
     },
 
     createdAt: {
       type: String,
       default: Date.now,
-      get: (createdAtVal) => dateFormat(createdAtVal),
+     // get: createdAtVal => dateFormat(createdAtVal),
     },
-    username: {
+    userName: {
       type: String,
       required: true,
     },
-    reactions: [reactionSchema],
+    reactions: [ReactionSchema],
   },
   {
     toJSON: {
@@ -64,10 +64,10 @@ const thoughtSchema = new Schema(
   }
 );
 
-thoughtSchema.virtual("reactionCount").get(function () {
-  return this.reactions;
+ThoughtSchema.virtual("reactionCount").get(function () {
+  return this.reactions.length;
 });
 
-const Thoughts = model("Thoughts", thoughtSchema);
+const Thoughts = model("Thoughts", ThoughtSchema);
 
 module.exports = Thoughts;
