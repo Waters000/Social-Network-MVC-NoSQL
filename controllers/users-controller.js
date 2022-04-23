@@ -53,11 +53,25 @@ const usersController = {
       .catch((err) => res.json(err));
   },
 
-  // delete User path api/users/:id
-  deleteUser({ params }, res) {
-    Users.findOneAndDelete({ _id: params.id })
-      .then((dbUserData) => res.json(dbUserData))
-      .catch((err) => res.json(err));
+
+
+
+  deleteUser: (req, res) => {
+    Users.findOne({ _id: req.params.id })
+      .then((user) => {
+        if (!user) {
+          res.status(404).send({ message: "User not found" });
+          return;
+        }
+        // delete user's thoughts
+        Thoughts.deleteMany({ _id: { $in: user.thoughts } }).then(() => {
+          user.remove();
+          res.json(user);
+        });
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
   },
 
   // update User by id  api/users/userId/friends/:friendsId  friendsID is a different user id
