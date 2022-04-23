@@ -20,6 +20,7 @@ const usersController = {
   getUserById({ params }, res) {
     Users.findOne({ _id: params.id })
       .populate({ path: "thoughts" })
+        .populate({path: "friends"})
       .select("-__v")
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
@@ -47,7 +48,7 @@ const usersController = {
           res.status(404).json({ message: "No User found with this id!" });
           return;
         }
-        res.json(dbPizzaData);
+        res.json(dbUserData);
       })
       .catch((err) => res.json(err));
   },
@@ -59,15 +60,11 @@ const usersController = {
       .catch((err) => res.json(err));
   },
 
-  // update User by id
+  // update User by id  api/users/userId/friends/:friendsId  friendsID is a different user id
   updateUserAddFriend({ params }, res) {
     Users.findOneAndUpdate(
       { _id: params.id },      
-      {
-        $push: {
-          friends: params.friendId,
-        },
-      },
+      {$addToSet: { friends: params.friendsId }},
       { new: true }
     )
     .populate ({path: 'friends', select: ('-__v')})
@@ -81,6 +78,31 @@ const usersController = {
       })
       .catch((err) => res.json(err));
   },
+
+  // update User by id  api/users/userId/friends/:friendsId  friendsID is a different user id
+  updateUserDeleteFriend({ params }, res) {
+    Users.findOneAndUpdate(
+      { _id: params.id },      
+      {
+        $pull: {
+          friends: params.friendId,
+        },
+      },
+      { new: true }
+    )
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          res.status(404).json({ message: "No User found with this id!" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => res.json(err));
+  },
+
 };
+
+
+
 
 module.exports = usersController;

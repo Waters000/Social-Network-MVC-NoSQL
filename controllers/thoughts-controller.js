@@ -88,6 +88,25 @@ updateThought({ params, body }, res) {
           .then(dbThoughtsData => res.json(dbThoughtsData))
           .catch(err => res.json(err));
       },
+
+
+           // addReaction to thought
+           addReaction(req, res) {
+        
+                 Thoughts.findOneAndUpdate(
+                  req.params.id,
+                  { $push: { reactions: req.body } },
+                  { new: true }
+                )            
+              .then(dbUserData => {
+                if (!dbUserData) {
+                  res.status(404).json({ message: 'No thought found with this id!' });
+                  return;
+                }
+                res.json(dbUserData);
+              })
+              .catch(err => res.json(err));
+          },
     
 
 
