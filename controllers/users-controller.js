@@ -40,7 +40,8 @@ const usersController = {
 
   // update User by id  path api/users/:id
   updateUser({ params, body }, res) {
-    Users.findOneAndUpdate({ _id: params.id }, body, {
+    Users.findOneAndUpdate({ _id: params.id }, body,
+       {
       new: true,
       runValidators: true,
     })

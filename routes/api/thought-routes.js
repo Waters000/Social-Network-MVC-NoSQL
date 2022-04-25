@@ -23,6 +23,7 @@ router
   .route('/:usersId')
   .post(addThought);
 
+  // api/thoughts/id
   router
   .route('/:id')
   .get(getThoughtById)
